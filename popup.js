@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveButton = document.getElementById('saveButton');
     const usernameDisplay = document.getElementById('usernameDisplay');
     const scrapeButton = document.getElementById('scrapeButton');
+    const playlistStatusElement = document.getElementById('playlistStatus')
+    const scrapeButtonElement = document.getElementById('scrapeButton')
   
     // Retrieve the saved username when the popup is opened
     chrome.runtime.sendMessage({ type: 'getUsername' }, function(response) {
@@ -21,9 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   
     scrapeButton.addEventListener('click', function() {
-      const playlistStatusElement = document.getElementById('playlistStatus')
-      const scrapeButtonElement = document.getElementById('scrapeButton')
-
       // Some nonsense occurs when trying to scrape twice
       // so the button is disabled until the page refreshes
       scrapeButtonElement.textContent = "Refresh page to use again"
