@@ -45,6 +45,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         });
       });
     });
-    return true; // Indicates that the response will be sent asynchronously
+    return true;
   }
 });
