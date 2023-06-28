@@ -1,0 +1,5 @@
+.cache*
+config.py
+test.js
+spotify-web-api.js
+env/
