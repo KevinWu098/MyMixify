@@ -1,49 +1,50 @@
-// background.js
+let username = '';
 
-let spotifyInfo = "";
-let youtubeInfo = "";
-
-// // Spotify API credentials and scope
-// const client_id = CLIENT_ID;
-// const client_secret = CLIENT_SECRET;
-// const redirect_uri = 'http://localhost:8080';
-// // const username = '31ynll75rxtq4mvbbzybir2slcni'; // my test one
-// const scope = 'playlist-modify-public';
-
-function handleMessage(request, sender, sendResponse) {
-  if (request.action === "scrapeYoutube") {
-    console.log("scrape")
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.executeScript(
-        tabs[0].id,
-        {
-          code: `
-            const spans = document.querySelectorAll('span[id="video-title"]');
-            const video_titles = Array.from(spans).map((span) => span.textContent.trim());
-            video_titles;
-          `,
-        },
-        function (result) {
-          const videoTitles = result[0];
-          console.log(videoTitles)
-          sendResponse({ video_titles: videoTitles });
-        }
-      );
-    });
-
-    console.log("scrape finish")
-    return true; // Needed for asynchronous sendResponse
-  }
-
-  if (request.action === "makePlaylist") {
-    
-  }
-
-  if (request.action === "saveSpotify") {
-    spotifyInfo = request.spotifyInfo;
-  }
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.type === 'saveUsername') { username = request.username } 
   
-  if (request.action === "getSpotifyInfo") {
-    sendResponse({ spotifyInfo });
+  if (request.type === 'getUsername') { sendResponse({ username }) } 
+  
+  if (request.type === 'scrapeYoutube') {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      chrome.tabs.executeScript(tabs[0].id, {
+        code: `
+          const spans = Array.from(document.querySelectorAll('span#video-title.style-scope.ytd-playlist-panel-video-renderer'));
+          const youtubeTitles = spans.map(span => span.textContent.trim());
+          youtubeTitles;
+        `
+      }, function(results) {
+        const youtubeTitles = results[0];
+        
+        // Checks that all inputs are correct
+        if (username == '' || youtubeTitles == null) { 
+          sendResponse('An error occurred') 
+          return 
+        }
+
+        // Create an object with username and song list
+        const data = {
+          username: username,
+          song_list: youtubeTitles,
+        };
+
+        // Make a POST request to the Flask server
+        fetch('http://127.0.0.1:5000/api/create_playlist', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(responseData => {
+          sendResponse(responseData.message)
+        })
+        .catch(error => {
+          sendResponse('An error occurred:', error)
+        });
+      });
+    });
+    return true; // Indicates that the response will be sent asynchronously
   }
-}
+});

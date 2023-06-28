@@ -1,7 +1,8 @@
-<!-- popup.html -->
 <!DOCTYPE html>
 <html>
   <head>
+    <title>MyMixify</title>
+    <script src="popup.js"></script>
     <style>
       body {
         width: 300px;
@@ -11,27 +12,23 @@
   </head>
   <body>
     <h1 style="
-      text-align: center; padding-top: 0px; 
-      background: #FF0000;
-      background: linear-gradient(to right, #FF0000 0%, #1CDF63 100%);
-      background-clip: initial;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    text-align: center; padding-top: 0px; 
+    background: #FF0000;
+    background: linear-gradient(to right, #FF0000 0%, #1CDF63 100%);
+    background-clip: initial;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     ">  
       MyMixify
     </h1>
+
     <h3>Enter Your Spotify Username</h3>
-    <input type="text" id="spotifyInput" placeholder="Username">
-    <button id="saveButton">Save Username</button>
-    <p id="savedSpotifyInfo"></p>
+    <input type="text" id="usernameInput" placeholder="Username"/>
+    <button id="saveButton">Save</button>
+    <p id="usernameDisplay"></p>
 
     <h3>Turn My Mix to Playlist</h3>
-    <button id="scrapeMakeButton">Convert</button>
-    <p id="responseMessage"></p>
-    <p id="playlistSuccess"></p>
-
-    <script src="spotify-web-api.js"></script>
-    <script src="background.js"></script>
-    <script src="popup.js"></script>
+    <button id="scrapeButton">Create Playlist</button>
+    <p id="playlistStatus"></p>
   </body>
 </html>
